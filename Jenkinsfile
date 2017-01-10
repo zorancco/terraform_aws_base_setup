@@ -2,14 +2,6 @@ node {
    stage 'checkout'
         checkout scm
 
-   stage 'test'
-        parallel (
-            phase1: { sh "echo p1; sleep 20s; echo phase1" },
-            phase2: { sh "echo p2; sleep 40s; echo phase2" }
-        )
-   stage name: 'build', concurrency: 1
-        sh "packer build project.json"
-
    stage name: 'plan', concurrency: 1
         sh "terraform plan --out plan"
 
