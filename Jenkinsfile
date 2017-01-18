@@ -41,7 +41,8 @@ node {
             }
             if (exitCode == "2") {
                 stash name: "plan", includes: "plan.out"
-                def terraform_plan = readFile('plan.out')
+                sh "set +e; terraform show > terraform.show.plan"
+                def terraform_plan = readFile('terraform.show.plan')
                 slackSend channel: '#team-it-eops-cd', color: 'good', message: "Plan Awaiting Approval: ${env.JOB_NAME} - ${env.BUILD_NUMBER} (${env.BUILD_URL}) ${terraform_plan}"
                 try {
                     input message: 'Apply Plan?', ok: 'Apply'
