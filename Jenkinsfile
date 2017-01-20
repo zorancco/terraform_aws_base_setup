@@ -1,8 +1,6 @@
 #!/usr/bin/env groovy
-print 'AAAAAAAAAAAAAAAAAAAA'
-print params.account_id
-print $account_id
-node ($account_id) {
+
+node (params.account_id) {
 
     // Mark the code checkout 'Checkout'....
     stage 'Checkout'
