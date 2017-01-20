@@ -1,6 +1,6 @@
 #!/usr/bin/env groovy
-print 'AA'
-print ${account_id}
+print 'AAAAAAAAAAAAAAAAAAAA'
+print params.account_id
 print $account_id
 node ($account_id) {
 
