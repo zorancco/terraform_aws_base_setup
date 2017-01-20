@@ -28,7 +28,7 @@ node (params.account_id) {
             sh "chmod +x ./init.sh"
             sh "./init.sh"
             sh "terraform get"
-            sh "set +e; terraform plan -out=plan.out -detailed-exitcode -no-colors; echo \$? > status"
+            sh "set +e; terraform plan -out=plan.out -detailed-exitcode -no-color; echo \$? > status"
             def exitCode = readFile('status').trim()
             def apply = false
             echo "Terraform Plan Exit Code: ${exitCode}"
@@ -41,7 +41,7 @@ node (params.account_id) {
             }
             if (exitCode == "2") {
                 stash name: "plan", includes: "plan.out"
-                sh "set +e; terraform show -no-colors > terraform.show.plan"
+                sh "set +e; terraform show -no-color > terraform.show.plan"
                 def terraform_plan = readFile('terraform.show.plan')
                 slackSend channel: '#team-it-eops-cd', color: 'good', message: "Plan Awaiting Approval: ${env.JOB_NAME} - ${env.BUILD_NUMBER} (${env.BUILD_URL}) ${terraform_plan}"
                 try {
@@ -60,7 +60,7 @@ node (params.account_id) {
                 if (fileExists("status.apply")) {
                     sh "rm status.apply"
                 }
-                sh 'set +e && terraform apply plan.out -no-colors; echo \$? > status.apply'
+                sh 'set +e && terraform apply plan.out -no-color; echo \$? > status.apply'
                 def applyExitCode = readFile('status.apply').trim()
                 if (applyExitCode == "0") {
                     slackSend channel: '#team-it-eops-cd', color: 'good', message: "Changes Applied ${env.JOB_NAME} - ${env.BUILD_NUMBER} ()"
