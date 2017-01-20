@@ -43,12 +43,12 @@ node (params.account_id) {
                 stash name: "plan", includes: "plan.out"
                 sh "set +e; terraform show -no-color > terraform.show.plan"
                 def terraform_plan = readFile('terraform.show.plan')
-                slackSend channel: '#team-it-eops-cd', color: 'good', message: "Plan Awaiting Approval: ${env.JOB_NAME} - ${env.BUILD_NUMBER} (${env.BUILD_URL}) ${terraform_plan}"
+                slackSend channel: '#team-it-eops-cd', color: 'good', message: "Plan Awaiting Approval: ${env.JOB_NAME} in Account ID: ${account_id} - BuildID: ${env.BUILD_NUMBER} (${env.BUILD_URL}) ${terraform_plan}"
                 try {
                     input message: 'Apply Plan?', ok: 'Apply'
                     apply = true
                 } catch (err) {
-                    slackSend channel: '#team-it-eops-cd', color: 'warning', message: "Plan Discarded: ${env.JOB_NAME} - ${env.BUILD_NUMBER} ()"
+                    slackSend channel: '#team-it-eops-cd', color: 'warning', message: "Plan Discarded:$ {env.JOB_NAME} in Account ID: ${account_id} - BuildID: ${env.BUILD_NUMBER} ()"
                     apply = false
                     currentBuild.result = 'UNSTABLE'
                 }
@@ -63,9 +63,9 @@ node (params.account_id) {
                 sh 'set +e && terraform apply plan.out -no-color; echo \$? > status.apply'
                 def applyExitCode = readFile('status.apply').trim()
                 if (applyExitCode == "0") {
-                    slackSend channel: '#team-it-eops-cd', color: 'good', message: "Changes Applied ${env.JOB_NAME} - ${env.BUILD_NUMBER} ()"
+                    slackSend channel: '#team-it-eops-cd', color: 'good', message: "Changes Applied ${env.JOB_NAME} in Account ID: ${account_id} - BuildID: ${env.BUILD_NUMBER} ()"
                 } else {
-                    slackSend channel: '#team-it-eops-cd', color: 'danger', message: "Apply Failed: ${env.JOB_NAME} - ${env.BUILD_NUMBER} ()"
+                    slackSend channel: '#team-it-eops-cd', color: 'danger', message: "Apply Failed: ${env.JOB_NAME} in Account ID: ${account_id} - BuildID: ${env.BUILD_NUMBER} ()"
                     currentBuild.result = 'FAILURE'
                 }
             }
