@@ -48,7 +48,7 @@ node (params.account_id) {
                     input message: 'Apply Plan?', ok: 'Apply'
                     apply = true
                 } catch (err) {
-                    slackSend channel: '#team-it-eops-cd', color: 'warning', message: "Plan Discarded:$ {env.JOB_NAME} in Account ID: ${account_id} - BuildID: ${env.BUILD_NUMBER} ()"
+                    slackSend channel: '#team-it-eops-cd', color: 'warning', message: "Plan Discarded: ${env.JOB_NAME} in Account ID: ${account_id} - BuildID: ${env.BUILD_NUMBER} ()"
                     apply = false
                     currentBuild.result = 'UNSTABLE'
                 }
